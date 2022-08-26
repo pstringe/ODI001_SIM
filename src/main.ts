@@ -23,6 +23,8 @@ interface Vect {
   z: number;
 }
 
+type Direction = 'left' | 'right' | 'forward' | 'back' | 'up' | 'down'
+
 const addCube = ({width, height, depth}: CubeDimensions, pos: Vect={x: 0, y: 0, z: 0}, color:number=0x00ff00) => {
   const geometry = new THREE.BoxGeometry( width, height, depth );
   const material = new THREE.MeshBasicMaterial( { color } );
@@ -34,17 +36,50 @@ const addCube = ({width, height, depth}: CubeDimensions, pos: Vect={x: 0, y: 0, 
 
 
 
-const addRow = (segments: number, size: number, gap:number=0, color:number=0xffffff) => {
+const addRow = (segments: number, size: number, gap:number=0, color:number=0xffffff, direction: Direction='right' ) => {
+  const getPosition = (direction: Direction, i: number, size: number): Vect => {
+    const positions = {
+      'right': {
+        x: (i * size) + (gap * i),
+        y: 0,
+        z: 0
+      },
+      'left': {
+        x: -(i * size) - (gap * i),
+        y: 0,
+        z: 0
+      },
+      'forward': {
+        x: 0,
+        y: 0,
+        z: (i * size) + (gap * i)
+      },
+      'back': {
+        x: 0,
+        y: 0,
+        z: -(i * size) - (gap * i)
+      },
+      'up': {
+        x: 0,
+        y: (i * size) + (gap * i),
+        z: 0
+      },
+      'down': {
+        x: 0,
+        y: -(i * size) - (gap * i),
+        z: 0
+      },
+    }
+    return positions[direction]
+  }
+
   for (let i = 0; i < segments; i++){
+    let pos = getPosition(direction, i, size)
     addCube({
       width: size,
       height: size,
       depth: size,
-    }, {
-      x: (i * size) + (gap * i),
-      y: 0,
-      z: 0
-    },
+    }, pos,
     color
     )
   }
@@ -52,7 +87,15 @@ const addRow = (segments: number, size: number, gap:number=0, color:number=0xfff
 
 addRow(3, 1, 0.1, 0x7304d4);
 
+addRow(3, 1, 0.1, 0x7304d4, 'left');
 
+addRow(3, 1, 0.1, 0x7304d4, 'forward');
+
+addRow(3, 1, 0.1, 0x7304d4, 'back');
+
+addRow(3, 1, 0.1, 0x7304d4, 'up');
+
+addRow(3, 1, 0.1, 0x7304d4, 'down');
 
 camera.position.z = 5;
 
