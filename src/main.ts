@@ -1,7 +1,6 @@
 import './style.css'
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { DepthFormat } from 'three';
 
 interface CubeDimensions {
   width: number;
@@ -24,7 +23,7 @@ const pointLight = new THREE.PointLight(0xffffff);
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
 scene.add(pointLight, ambientLight);
 
-pointLight.position.set(0, 0, 1);
+pointLight.position.set(0, 0, 0);
 
 type Direction = 'left' | 'right' | 'forward' | 'back' | 'up' | 'down'
 
@@ -39,37 +38,37 @@ const addCube = ({width, height, depth}: CubeDimensions, pos: Vect={x: 0, y: 0, 
 
 
 
-const addRow = (segments: number, size: number, gap:number=0, color:number=0xffffff, direction: Direction='right' ) => {
-  const getPosition = (direction: Direction, i: number, size: number): Vect => {
+const addRow = (segments: number, size: number, gap:number=0, color:number=0xffffff, direction: Direction='right', offset:number=0 ) => {
+  const getPosition = (direction: Direction, i: number, size: number, offset: number): Vect => {
     const positions = {
       'right': {
-        x: (i * size) + (gap * i),
+        x: (i * size) + (gap * i) + offset,
         y: 0,
         z: 0
       },
       'left': {
-        x: -(i * size) - (gap * i),
+        x: -(i * size) - (gap * i) - offset,
         y: 0,
         z: 0
       },
       'forward': {
         x: 0,
         y: 0,
-        z: (i * size) + (gap * i)
+        z: (i * size) + (gap * i) + offset
       },
       'back': {
         x: 0,
         y: 0,
-        z: -(i * size) - (gap * i)
+        z: -(i * size) - (gap * i) - offset
       },
       'up': {
         x: 0,
-        y: (i * size) + (gap * i),
+        y: (i * size) + (gap * i) + offset,
         z: 0
       },
       'down': {
         x: 0,
-        y: -(i * size) - (gap * i),
+        y: -(i * size) - (gap * i) - offset,
         z: 0
       },
     }
@@ -77,7 +76,7 @@ const addRow = (segments: number, size: number, gap:number=0, color:number=0xfff
   }
 
   for (let i = 0; i < segments; i++){
-    let pos = getPosition(direction, i, size)
+    let pos = getPosition(direction, i, size, offset)
     addCube({
       width: size,
       height: size,
@@ -88,17 +87,23 @@ const addRow = (segments: number, size: number, gap:number=0, color:number=0xfff
   }
 }
 
-addRow(3, 1, 0.1, 0x7304d4);
+const LENGTH: number = 3;
+const GAP: number = 0.1;
+const COLOR: number = 0x7304d4;
+const SIZE: number = 1;
+const OFFSET: number = GAP + SIZE;
 
-addRow(3, 1, 0.1, 0x7304d4, 'left');
+addRow(LENGTH, SIZE, GAP, COLOR, 'right', OFFSET);
 
-addRow(3, 1, 0.1, 0x7304d4, 'forward');
+addRow(LENGTH, SIZE, GAP, COLOR, 'left', OFFSET);
 
-addRow(3, 1, 0.1, 0x7304d4, 'back');
+//addRow(LENGTH, SIZE, GAP, 0x7304d4, 'forward', OFFSET);
 
-addRow(3, 1, 0.1, 0x7304d4, 'up');
+addRow(3, SIZE, GAP, COLOR, 'back', OFFSET);
 
-addRow(3, 1, 0.1, 0x7304d4, 'down');
+//addRow(LENGTH, SIZE, GAP, 0x7304d4, 'up', OFFSET);
+
+//addRow(LENGTH, SIZE, GAP, 0x7304d4, 'down', OFFSET);
 
 camera.position.z = 5;
 
