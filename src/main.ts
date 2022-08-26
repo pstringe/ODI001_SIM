@@ -23,9 +23,9 @@ interface Vect {
   z: number;
 }
 
-const addCube = ({width, height, depth}: CubeDimensions, pos: Vect={x: 0, y: 0, z: 0}) => {
+const addCube = ({width, height, depth}: CubeDimensions, pos: Vect={x: 0, y: 0, z: 0}, color:number=0x00ff00) => {
   const geometry = new THREE.BoxGeometry( width, height, depth );
-  const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+  const material = new THREE.MeshBasicMaterial( { color } );
   const cube = new THREE.Mesh( geometry, material );
   cube.position.set(pos.x, pos.y, pos.z)
   scene.add( cube );
@@ -34,7 +34,7 @@ const addCube = ({width, height, depth}: CubeDimensions, pos: Vect={x: 0, y: 0, 
 
 
 
-const addRow = (segments: number, size: number, gap:number=0) => {
+const addRow = (segments: number, size: number, gap:number=0, color:number=0xffffff) => {
   for (let i = 0; i < segments; i++){
     addCube({
       width: size,
@@ -44,12 +44,13 @@ const addRow = (segments: number, size: number, gap:number=0) => {
       x: (i * size) + (gap * i),
       y: 0,
       z: 0
-    }
+    },
+    color
     )
   }
 }
 
-addRow(3, 1, 0.1);
+addRow(3, 1, 0.1, 0x7304d4);
 
 
 
