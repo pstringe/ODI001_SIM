@@ -20,8 +20,10 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 const pointLight = new THREE.PointLight(0xffffff);
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-scene.add(pointLight, ambientLight);
+pointLight.position.set( 50, 50, 50 );
+
+//const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+scene.add(pointLight);
 
 pointLight.position.set(0, 0, 0);
 
@@ -36,6 +38,13 @@ const addCube = ({width, height, depth}: CubeDimensions, pos: Vect={x: 0, y: 0, 
   return cube;
 }
 
+const addSphere = (radius: number, pos: Vect={x: 0, y: 0, z: 0}, color:number=0x00ff00) => {
+  const geometry = new THREE.SphereGeometry(radius, 32, 32);
+  const material = new THREE.MeshBasicMaterial({color: 0xffffff});
+  const sphere = new THREE.Mesh(geometry, material);
+  sphere.position.set(pos.x, pos.y, pos.z);
+  scene.add(sphere);
+}
 
 
 const addRow = (segments: number, size: number, gap:number=0, color:number=0xffffff, direction: Direction='right', offset:number=0 ) => {
@@ -105,6 +114,7 @@ addRow(3, SIZE, GAP, COLOR, 'back', OFFSET);
 
 //addRow(LENGTH, SIZE, GAP, 0x7304d4, 'down', OFFSET);
 
+addSphere(0.5, {x: 0, y: 0, z: 0}, COLOR)
 camera.position.z = 5;
 
 const controls = new OrbitControls( camera, renderer.domElement );
